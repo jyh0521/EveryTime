@@ -6,7 +6,7 @@
 	<title>메인</title>
 </head>
 <body>
-	<p>하이</p>
+	<p>로그인123</p>
 	<c:forEach items="${list }" var="row">
 		 
 			<p>${row.ID }</p>

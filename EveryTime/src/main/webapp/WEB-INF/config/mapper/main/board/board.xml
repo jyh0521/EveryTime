@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="board"> 
+	<!-- 게시판 목록 불러오기 -->
+	<select id="getBoardList" parameterType="Map" resultType="Map">
+		SELECT BRD_ID, BRD_TITLE, BRD_WRITER, BRD_DATE, BRD_HIT
+		  FROM BRD
+		 ORDER BY BRD_DATE DESC
+	</select>
+	
+	<!-- 조회 수 증가 -->
+	<update id="hitBoardContent">
+		UPDATE BRD
+		   SET BRD_HIT = BRD_HIT + 1
+		 WHERE BRD_ID = #{selectedId}
+	</update>
+	
+	<!-- 게시판 글 내용 불러오기 -->
+	<select id="getBoardContent" parameterType="Map" resultType="Map">
+		SELECT *
+		  FROM BRD
+		 WHERE BRD_ID = #{selectedId}
+	</select>
+	
+	<!-- 게시판 글 작성하기 -->
+	<insert id="setBoardContent">
+		ALTER TABLE BRD AUTO_INCREMENT=1;
+		SET @COUNT = 0;
+		UPDATE BRD SET BRD_ID = @COUNT:=@COUNT+1;
+		
+		INSERT 
+		  INTO BRD (BRD_TITLE, BRD_CONTENT, BRD_WRITER, BRD_DATE) 
+	 	VALUES (#{title}, #{content}, #{usrId}, #{date})
+	</insert>
+	
+	<!-- 게시판 글 수정하기 -->
+	<update id="modBoardContent">
+		UPDATE BRD
+		   SET BRD_TITLE = #{title}, BRD_CONTENT = #{content}, BRD_DATE = #{date}
+		 WHERE BRD_ID = #{id}
+	</update>
+	
+	<!-- 게시판 글 삭제하기 -->
+	<delete id="delBoardContent">
+		DELETE
+		  FROM BRD
+		 WHERE BRD_ID = #{id}
+	</delete>
+	
+	<!-- 게시판 글 ID 정렬 -->
+	<update id="alterBrdAutoIncrement">
+		ALTER
+		TABLE BRD AUTO_INCREMENT = 1;
+		
+		SET @COUNT = 0;
+		
+		UPDATE BRD
+		   SET BRD_ID = @COUNT:=@COUNT + 1;
+	</update>
+
+</mapper>

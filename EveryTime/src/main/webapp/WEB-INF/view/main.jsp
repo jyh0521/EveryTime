@@ -62,8 +62,9 @@
 </body>
 <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
+<script type="text/javascript" src="resources/js/lib/lib.js"></script>
+<script type="text/javascript" src="resources/js/main/main.js"></script>
 <script type="text/javascript" src="resources/js/main/board.js"></script>
 <script type="text/javascript" src="resources/js/main/home.js"></script>
 <script type="text/javascript" src="resources/js/main/timeTable.js"></script>
-<script type="text/javascript" src="resources/js/main/main.js"></script>
 </html>

@@ -147,10 +147,10 @@ function drawBoardList() {
 	for(var i = 0; i < boardListSize; i++) {
 		boardListHtml += "<tr>";
 		boardListHtml += 	"<td>" + (i + 1) + "</td>";
-		boardListHtml += 	"<td class='brdTitle' id="+boardList[i]["BRD_ID"]+"><a>" + boardList[i]["BRD_TITLE"]+ "</a></td>";
-		boardListHtml += 	"<td>" + boardList[i]["BRD_WRITER"]+ "</td>";
+		boardListHtml += 	"<td class='brdTitle' id=" + boardList[i]["BRD_ID"]+"><a>" + boardList[i]["BRD_TITLE"]+ "</a></td>";
+		boardListHtml += 	"<td>" + boardList[i]["BRD_WRITER"] + "</td>";
 		boardListHtml += 	"<td>" + getTimeStamp(boardList[i]["BRD_DATE"]) + "</td>";
-		boardListHtml += 	"<td>" + boardList[i]["BRD_HIT"]+ "</td>";
+		boardListHtml += 	"<td>" + boardList[i]["BRD_HIT"] + "</td>";
 		boardListHtml += "</tr>";
 	}
 	

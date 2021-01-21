@@ -6,7 +6,10 @@
 	<title>메인</title>
 </head>
 <body>
-	<c:if test="${! empty userInfo}">
+	<c:if test="${! empty usrId}">
+	<div id="loginUser">
+	</div>
+	
 	<button id="logoutBtn">로그아웃</button>
 	<button id="homeBtn">홈</button>
 	<button id="timeTableBtn">시간표</button>
@@ -48,7 +51,7 @@
 					<input type="text" name="boardTitle" id="boardTitle" />
 					
 					<label for="boardContent">내용</label>
-					<textarea name="boardContent" cols="40" rows="8"></textarea>
+					<textarea name="boardContent" id="boardContent" cols="40" rows="8"></textarea>
 				</form>
 				<button id="writeBtn">작성하기</button>
 				<button id="backBtn">뒤로</button>

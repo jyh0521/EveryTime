@@ -6,7 +6,7 @@
 	version="3.1">
 
     <welcome-file-list>
-       <welcome-file>/WEB-INF/view/login.jsp</welcome-file>
+       <welcome-file>/WEB-INF/view/user/login.jsp</welcome-file>
     </welcome-file-list>
 
 	<servlet>

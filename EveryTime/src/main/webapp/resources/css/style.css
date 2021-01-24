@@ -1,0 +1,5 @@
+/* 게시판 내용 */
+#Content {border: 1px solid; width: 20%; padding: 1%; margin: 1%}
+
+/* 게시판 댓글 */
+#Comment {border: 1px solid; width: 20%; padding: 1%; margin: 1%}

@@ -4,6 +4,7 @@
 <html>
 <head>
 	<title>메인</title>
+	<link rel="stylesheet" type="text/css" href="resources/css/style.css">
 </head>
 <body>
 	<c:if test="${! empty usrId}">
@@ -42,6 +43,8 @@
 			
 			<!-- 게시판 글 내용 -->
 			<div id="boardContent" style="display: none;">
+				<div id="Content"></div>
+				<div id="Comment"></div>
 			</div>
 			
 			<!-- 게시판 글 작성 -->

@@ -22,12 +22,15 @@
 		 WHERE BRD_ID = #{selectedId}
 	</select>
 	
+	<!-- 게시판 글 내용 불러오기 -->
+	<select id="getBoardContComment" parameterType="Map" resultType="Map">
+		SELECT *
+		  FROM BRD_COMMENT
+		 WHERE BRD_ID = #{selectedId}
+	</select>
+	
 	<!-- 게시판 글 작성하기 -->
-	<insert id="setBoardContent">
-		ALTER TABLE BRD AUTO_INCREMENT=1;
-		SET @COUNT = 0;
-		UPDATE BRD SET BRD_ID = @COUNT:=@COUNT+1;
-		
+	<insert id="setBoardContent">		
 		INSERT 
 		  INTO BRD (BRD_TITLE, BRD_CONTENT, BRD_WRITER, BRD_DATE) 
 	 	VALUES (#{title}, #{content}, #{usrId}, #{date})
@@ -46,16 +49,18 @@
 		  FROM BRD
 		 WHERE BRD_ID = #{id}
 	</delete>
-	
-	<!-- 게시판 글 ID 정렬 -->
-	<update id="alterBrdAutoIncrement">
-		ALTER
-		TABLE BRD AUTO_INCREMENT = 1;
-		
-		SET @COUNT = 0;
-		
-		UPDATE BRD
-		   SET BRD_ID = @COUNT:=@COUNT + 1;
-	</update>
 
+	<!-- 게시판 댓글 작성하기 -->
+	<insert id="writeBoardComment">
+		INSERT 
+		  INTO BRD_COMMENT (COM_CONTENT, COM_WRITER, COM_DATE, BRD_ID) 
+	 	VALUES (#{comment}, #{usrId}, #{date}, #{id})
+	</insert>
+	
+	<!-- 게시판 댓글 삭제하기 -->
+	<delete id="delBoardComment">
+		DELETE
+		  FROM BRD_COMMENT
+		 WHERE COM_ID = #{id}
+	</delete>
 </mapper>

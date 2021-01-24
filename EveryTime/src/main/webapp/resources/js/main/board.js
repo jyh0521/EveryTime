@@ -4,7 +4,9 @@
 
 var boardList = {};
 var boardContent = {};
-var nowContentId = "";
+var boardContComment = {};
+var selectedId = "";
+var selectedCommentId = "";
 var option = "write";
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -21,6 +23,8 @@ function boardInit() {
 	
 	$("#boardTitle").val("");
 	$("textarea#boardContent").val("");
+	
+	selectedId = "";
 	
 	getBoardList();
 }
@@ -40,7 +44,7 @@ function getBoardList() {
 }
 
 // 조회 수 쿠키 검사
-function hitBoardContent(selectedId) {
+function hitBoardContent() {
 	var deferred = $.Deferred();
 	
 	try{
@@ -64,14 +68,20 @@ function hitBoardContent(selectedId) {
 }
 
 // 게시판 내용 불러오기
-function getBoardContent(selectedId) {
-	hitBoardContent(selectedId).done(function(){
+function getBoardContent() {
+	hitBoardContent().done(function(){
 		var param = "selectedId=" + selectedId; 
 				
 		requestData("getBoardContent.do", param).done(function(result){
-			boardContent = result;	
+			boardContent = result["CONTENT"];
+			boardContComment = result["COMMENT"];	
 			
-			drawBoardContent();
+			// 게시판 내용, 댓글 그리기
+			drawBoardContent();	
+			drawBoardComment();
+			
+			// 게시판 글 읽기 이벤트
+			initBrdReadEvent();
 		});
 	});
 }
@@ -109,7 +119,7 @@ function setBoardContent() {
 	
 	// 글 수정
 	else if(option === "modify") {
-		param += "&id=" + nowContentId;
+		param += "&id=" + selectedId;
 		
 		requestData("modBoardContent.do", param).done(function(result){
 			if(result == "success") {
@@ -123,7 +133,7 @@ function setBoardContent() {
 }
 
 function delBoardContent() {
-	var param = "id=" + nowContentId;
+	var param = "id=" + selectedId;
 	
 	requestData("delBoardContent.do", param).done(function(result){
 		if(result == "success") {
@@ -132,6 +142,37 @@ function delBoardContent() {
 		} else {
 			alert("삭제 실패하였습니다.");
 		}
+	});
+}
+
+// 댓글 작성
+function writeBoardComment() {
+	var comment = $("textarea#boardContComment").val();
+	
+	if(comment == null) {
+		alert("댓글을 작성해주세요.");
+		
+		return false;
+	} 
+	else {
+		var param = "comment=" + comment + "&usrId=" + loginUser + "&date=" + getTimeStamp(new Date()) + "&id=" + selectedId;
+
+		requestData("writeBoardComment.do", param).done(function(result) {
+			alert("댓글이 작성되었습니다.");
+			
+			getBoardContent();
+		});	
+	}
+}
+
+// 댓글 삭제
+function delBoardComment() {
+	var param = "id=" + selectedCommentId.substring(9);
+	
+	requestData("delBoardComment.do", param).done(function(result){
+		alert("댓글이 삭제되었습니다.");
+		
+		getBoardContent();
 	});
 }
 
@@ -161,8 +202,6 @@ function drawBoardList() {
 
 // 게시판 내용 그리기
 function drawBoardContent() {
-	nowContentId = boardContent[0]["BRD_ID"];
-
 	var boardContentHtml = "";
 	
 	boardContentHtml += "<p>제목: " + boardContent[0]["BRD_TITLE"] + "</p>";
@@ -177,13 +216,28 @@ function drawBoardContent() {
 		boardContentHtml += "<button id='delBoardBtn'>삭제</button>";
 	}
 	
-	$("#boardContent").empty().append(boardContentHtml);
+	$("#Content").empty().append(boardContentHtml);
+}
+
+// 게시판 댓글 그리기
+function drawBoardComment() {
+	var boardCommentHtml = "";
+	var boardCommentSize = boardContComment.length;
 	
-	initBrdReadEvent();
+	for(var i = 0; i < boardCommentSize; i++) {
+		boardCommentHtml += "<h5>작성자: " + boardContComment[i]["COM_WRITER"] + " 작성일: " +  getTimeStamp(boardContComment[i]["COM_DATE"]) + "</h5>";
+		boardCommentHtml += "<h5 style='display: inline;' id='commentId" + boardContComment[i]["COM_ID"] + "'>내용: " + boardContComment[i]["COM_CONTENT"] + "</h5>";
 	
-	$("#boardList").css("display", "none");
-	$("#boardContent").css("display", "block");
-	$("#boardWrite").css("display", "none");
+		if(boardContComment[i]["COM_WRITER"] == loginUser) {
+			boardCommentHtml += "<button class='delCommentBtn'>삭제</button>";
+		}
+	}
+	
+	boardCommentHtml += "<h5>댓글 작성하기</h5>";
+	boardCommentHtml += "<textarea name='boardContComment' id='boardContComment' cols='40' rows='3'></textarea>";
+	boardCommentHtml += "<button id='writeCommentBtn'>작성</button>";
+	
+	$("#Comment").empty().append(boardCommentHtml);
 }
 
 // 게시판 글 작성 부분 그리기
@@ -211,9 +265,13 @@ function drawModBoard() {
 function initBrdListEvent() {
 	// 게시판 글 제목 클릭 시
 	$(".brdTitle").off("click").on("click", function() {
-		var selectedId = this.id;
+		selectedId = this.id;
 
-		getBoardContent(selectedId);
+		getBoardContent();
+		
+		$("#boardList").css("display", "none");
+		$("#boardContent").css("display", "block");
+		$("#boardWrite").css("display", "none");
 	});
 	
 	// 게시판 글 작성 버튼 클릭 시
@@ -230,15 +288,27 @@ function initBrdReadEvent() {
 		boardInit();
 	});
 	
-	// 수정 버튼 클릭 시
+	// 글 수정 버튼 클릭 시
 	$("#modBoardBtn").off("click").on("click", function(){
 		option = "modify";
 		drawModBoard();
 	});
 	
-	// 삭제 버튼 클릭 시
+	// 글 삭제 버튼 클릭 시
 	$("#delBoardBtn").off("click").on("click", function(){
 		delBoardContent();
+	});
+	
+	// 댓글 작성 버튼 클릭 시
+	$("#writeCommentBtn").off("click").on("click", function(){
+		writeBoardComment();
+	});
+	
+	// 댓글 삭제 버튼 클릭 시
+	$(".delCommentBtn").off("click").on("click", function(){
+		selectedCommentId = this.previousElementSibling.id;
+		
+		delBoardComment();
 	});
 }
 
@@ -256,60 +326,9 @@ function initBrdWriteEvent() {
 
 /*
 	TODO
-	1. 게시판 글 작성 후 등록 *
-	2. 게시판 글 수정 *
-	3. 게시판 글 삭제 *
-	4. 조회수 *
-	5. 작성일 *
-	6. 글 10개씩 출력 되도록
-	7. 공백 입력시 저장 못하게 막기 *
+	1. 글 10개씩 출력 되도록
 */
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////// 기타 함수 ////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-// 현재 시간을 구하는 함수 yyyy-mm-dd hh:mm:ss 형태로
-function getTimeStamp(date) {
-	var d = new Date(date);
-	var s =
-    leadingZeros(d.getFullYear(), 4) + '-' +
-    leadingZeros(d.getMonth() + 1, 2) + '-' +
-    leadingZeros(d.getDate(), 2) + ' ' +
-
-    leadingZeros(d.getHours(), 2) + ':' +
-    leadingZeros(d.getMinutes(), 2) + ':' +
-    leadingZeros(d.getSeconds(), 2);
-
-	return s;
-}
-
-function leadingZeros(n, digits) {
-	var zero = '';
-	n = n.toString();
-	
-	if (n.length < digits) {
-		for (i = 0; i < digits - n.length; i++)
-	    	zero += '0';
-	}
-	
-	return zero + n;
-}
-
-// 쿠키 등록, 검색, 삭제
-function setCookie(name, value, exp) {
-	var date = new Date();
-	
-	date.setTime(date.getTime() + exp * 24 * 60 * 60 * 1000);
-	document.cookie = name + '=' + value + ';expires=' + date.toUTCString() + ';path=/';
-};
-
-function getCookie(name) {
-	var value = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
-	
-	return value? value[2] : null;
-};
-
-function deleteCookie(name) {
-	document.cookie = name + '=; expires=Thu, 01 Jan 1999 00:00:10 GMT;';
-}

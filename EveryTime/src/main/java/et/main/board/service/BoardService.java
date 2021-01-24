@@ -18,37 +18,56 @@ public class BoardService {
 	@Autowired
 	private SqlSessionTemplate sqlSession;
 	
+	// 게시판 목록 불러오기
 	public List<Map<String, Object>> getBoardList(Map<String, Object> param) throws Exception {
 		return sqlSession.selectList("board.getBoardList", param);
 	}
 	
+	// 게시판 선택된 글 조회 수 증가
 	public String hitBoardContent(Map<String, Object> param) throws Exception {
 		sqlSession.update("board.hitBoardContent", param);
 		
 		return "success";
 	}
 	
+	// 게시판 선택된 글 불러오기
 	public List<Map<String, Object>> getBoardContent(Map<String, Object> param) throws Exception {
 		return sqlSession.selectList("board.getBoardContent", param);
 	}
 	
+	// 게시판 선택된 글의 댓글 불러오기
+	public List<Map<String, Object>> getBoardContComment(Map<String, Object> param) throws Exception {
+		return sqlSession.selectList("board.getBoardContComment", param);
+	}
+	
+	// 게시판 글 작성하기
 	public String setBoardContent(Map<String, Object> param) throws Exception {
-		sqlSession.update("board.alterBrdAutoIncrement", param);
 		sqlSession.insert("board.setBoardContent", param);
 		
 		return "success";
 	}
 	
+	// 게시판 글 수정하기
 	public String modBoardContent(Map<String, Object> param) throws Exception {	
 		sqlSession.update("board.modBoardContent", param);
 		
 		return "success";
 	}
 	
+	// 게시판 글 삭제하기
 	public String delBoardContent(Map<String, Object> param) throws Exception {
 		sqlSession.delete("board.delBoardContent", param);
-		sqlSession.update("board.alterBrdAutoIncrement", param);
 		
 		return "success";
+	}
+	
+	// 게시판 댓글 작성하기
+	public void writeBoardComment(Map<String, Object> param) throws Exception {
+		sqlSession.insert("board.writeBoardComment", param);
+	}
+	
+	// 게시판 댓글 삭제하기
+	public void delBoardComment(Map<String, Object> param) throws Exception {
+		sqlSession.delete("board.delBoardComment", param);
 	}
 }

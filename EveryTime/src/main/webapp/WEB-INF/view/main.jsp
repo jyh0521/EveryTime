@@ -23,8 +23,10 @@
 
 		<!-- 게시판 -->
 		<div id="board" style="display: none;">
-			<!-- 게시판 목록 -->
-			<div id="boardList" style="display: none;">
+			<!-- 게시판 메뉴 목록 -->
+			<div id="boardMenuList"></div>
+			<!-- 게시판 글 목록 -->
+			<div id="boardContentList" style="display: none;">
 			<table border='1'>
 				<thead id="boardThead">
 					<tr>

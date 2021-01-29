@@ -23,11 +23,25 @@ public class BoardController {
 	@Resource(name="BoardService")
 	private BoardService boardService;
 	
-	// 게시판 목록 불러오기
-	@RequestMapping(value="/getBoardList.do")
+	// 게시판 메뉴 목록 불러오기
+	@RequestMapping(value="/getBoardMenuList.do")
 	@ResponseBody
-	public List<Map<String, Object>> getBoardList(@RequestParam Map<String, Object> param, HttpSession session) throws Exception {		
-		return boardService.getBoardList(param);
+	public List<Map<String, Object>> getBoardMenuList(@RequestParam Map<String, Object> param, HttpSession session) throws Exception {		
+		return boardService.getBoardMenuList(param);
+	}
+	
+	// 내가 쓴 글 목록 불러오기
+	@RequestMapping(value="/getMyContentList.do")
+	@ResponseBody
+	public List<Map<String, Object>> getMyContentList(@RequestParam Map<String, Object> param, HttpSession session) throws Exception {		
+		return boardService.getMyContentList(param);
+	}
+	
+	// 게시판 목록 불러오기
+	@RequestMapping(value="/getBoardContentList.do")
+	@ResponseBody
+	public List<Map<String, Object>> getBoardContentList(@RequestParam Map<String, Object> param, HttpSession session) throws Exception {		
+		return boardService.getBoardContentList(param);
 	}
 	
 	// 게시판 선택된 글 조회 수 증가

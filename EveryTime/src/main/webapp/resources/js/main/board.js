@@ -2,11 +2,16 @@
 ////////////////////////////////////////////////////////////////////////////// 변수 //////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-var boardList = {};
+var boardMenuList = {};
+var boardContentList = {};
 var boardContent = {};
 var boardContComment = {};
+
+var selectedMenuId = "";
+var selectedMenuVal = "";
 var selectedId = "";
 var selectedCommentId = "";
+
 var option = "write";
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -17,7 +22,8 @@ var option = "write";
 function boardInit() {
 	$("#timeTable").css("display", "none");
 	$("#board").css("display", "block");
-	$("#boardList").css("display", "inline-block");
+	$("#boardContentList").css("display", "none");
+	$("#boardMenuList").css("display", "block");
 	$("#boardContent").css("display", "none");
 	$("#boardWrite").css("display", "none");
 	
@@ -26,20 +32,48 @@ function boardInit() {
 	
 	selectedId = "";
 	
-	getBoardList();
+	getBoardMenuList();
+	//getBoardContentList();
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////// 데이터 불러오기 //////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// 게시판 목록 불러오기
-function getBoardList() {
-	var list = "";
+// 게시판 메뉴 목록 불러오기
+function getBoardMenuList() {
+	requestData("getBoardMenuList.do").done(function(result){
+		boardMenuList = result;
+		
+		drawBoardMenuList();
+		initBrdMenuListEvent();
+	});
+}
+
+// 내가 쓴 글 목록 불러오기
+function getMyContentList() {
+	var param = "loginUser=" + loginUser;
 	 
-	requestData("getBoardList.do").done(function(result){
-		boardList = result;
-		drawBoardList();
+	requestData("getMyContentList.do", param).done(function(result){
+		boardContentList = result;
+		
+		drawBoardContentList();
+	});
+}
+
+// 내가 쓴 댓글 목록 불러오기
+function getMyCommentList() {
+	
+}
+
+// 게시판 목록 불러오기
+function getBoardContentList() {
+	var param = "selectedMenuId=" + selectedMenuId;
+	 
+	requestData("getBoardContentList.do", param).done(function(result){
+		boardContentList = result;
+		
+		drawBoardContentList();
 	});
 }
 
@@ -103,7 +137,7 @@ function setBoardContent() {
 	}
 	
 	// 파라미터 생성
-	var param = "title=" + title + "&content=" + content + "&date=" + date;
+	var param = "title=" + title + "&content=" + content +"&date=" + date + "&selectedMenuId=" + selectedMenuId;
 	
 	// 글 작성
 	if(option === "write") {
@@ -180,22 +214,41 @@ function delBoardComment() {
 ////////////////////////////////////////////////////////////////////////// 화면에 그리기 ///////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-// 게시판 목록 그리기
-function drawBoardList() {
-	var boardListHtml = "";
-	var boardListSize = boardList.length;
+// 게시판 메뉴 목록 그리기
+function drawBoardMenuList() {
+	var boardMenuListHtml = "";
+	var boardMenuListSize = boardMenuList.length;
 	
-	for(var i = 0; i < boardListSize; i++) {
-		boardListHtml += "<tr>";
-		boardListHtml += 	"<td>" + (i + 1) + "</td>";
-		boardListHtml += 	"<td class='brdTitle' id=" + boardList[i]["BRD_ID"]+"><a>" + boardList[i]["BRD_TITLE"]+ "</a></td>";
-		boardListHtml += 	"<td>" + boardList[i]["BRD_WRITER"] + "</td>";
-		boardListHtml += 	"<td>" + getTimeStamp(boardList[i]["BRD_DATE"]) + "</td>";
-		boardListHtml += 	"<td>" + boardList[i]["BRD_HIT"] + "</td>";
-		boardListHtml += "</tr>";
+	boardMenuListHtml += "<ul>";
+	
+	for(var i = 0; i < boardMenuListSize; i++) {
+		boardMenuListHtml += 	"<li><a class='brdMenuList' id='" + boardMenuList[i]["MENU_CDE"] + "'>"+ boardMenuList[i]["MENU_VAL"] + "</a></li>";
 	}
 	
-	$("#boardTbody").empty().append(boardListHtml);
+	boardMenuListHtml += "</ul>";
+	
+	$("#boardMenuList").empty().append(boardMenuListHtml);
+}
+
+// 게시판 목록 그리기
+function drawBoardContentList() {
+	$("#boardMenuList").css("display", "none");
+	$("#boardContentList").css("display", "inline-block");
+	
+	var boardContentListHtml = "";
+	var boardContentListSize = boardContentList.length;
+	
+	for(var i = 0; i < boardContentListSize; i++) {
+		boardContentListHtml += "<tr>";
+		boardContentListHtml += 	"<td>" + (i + 1) + "</td>";
+		boardContentListHtml += 	"<td class='brdTitle' id=" + boardContentList[i]["BRD_ID"]+"><a>" + boardContentList[i]["BRD_TITLE"]+ "</a></td>";
+		boardContentListHtml += 	"<td>" + boardContentList[i]["BRD_WRITER"] + "</td>";
+		boardContentListHtml += 	"<td>" + getTimeStamp(boardContentList[i]["BRD_DATE"]) + "</td>";
+		boardContentListHtml += 	"<td>" + boardContentList[i]["BRD_HIT"] + "</td>";
+		boardContentListHtml += "</tr>";
+	}
+	
+	$("#boardTbody").empty().append(boardContentListHtml);
 	
 	initBrdListEvent();
 }
@@ -209,6 +262,7 @@ function drawBoardContent() {
 	boardContentHtml += "<p>작성자: " + boardContent[0]["BRD_WRITER"] + "</p>";
 	boardContentHtml += "<p>작성일: " + getTimeStamp(boardContent[0]["BRD_DATE"]) + "</p>";
 	boardContentHtml += "<p>조회수: " + boardContent[0]["BRD_HIT"] + "</p>";
+	boardContentHtml += "<p>게시판: " + boardContent[0]["MENU_VAL"] + "</p>"; 
 	boardContentHtml += "<button id='backBoardBtn'>뒤로</button>";
 	
 	if(boardContent[0]["BRD_WRITER"] == loginUser) {
@@ -242,7 +296,7 @@ function drawBoardComment() {
 
 // 게시판 글 작성 부분 그리기
 function drawWriteBoard() {
-	$("#boardList").css("display", "none");
+	$("#boardContentList").css("display", "none");
 	$("#boardContent").css("display", "none");
 	$("#boardWrite").css("display", "block");
 	
@@ -261,6 +315,24 @@ function drawModBoard() {
 ////////////////////////////////////////////////////////////////////////// 게시판 이벤트 ///////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+// 게시판 메뉴 이벤트 등록
+function initBrdMenuListEvent() {
+	$(".brdMenuList").off("click").on("click", function(){
+		selectedMenuId = this.id;
+		
+		if(selectedMenuId.substr(-3) === "BRD") {
+			getBoardContentList();	
+		}
+		else if(selectedMenuId === "MY_CONTENT") {
+			getMyContentList();	
+		}
+		else if(selectedMenuId === "MY_COMMENT") {
+			getMyCommentList();
+		}
+		
+	});
+}
+
 // 게시판 이벤트 등록
 function initBrdListEvent() {
 	// 게시판 글 제목 클릭 시
@@ -269,7 +341,7 @@ function initBrdListEvent() {
 
 		getBoardContent();
 		
-		$("#boardList").css("display", "none");
+		$("#boardContentList").css("display", "none");
 		$("#boardContent").css("display", "block");
 		$("#boardWrite").css("display", "none");
 	});

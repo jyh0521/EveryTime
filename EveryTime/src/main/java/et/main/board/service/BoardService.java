@@ -18,9 +18,19 @@ public class BoardService {
 	@Autowired
 	private SqlSessionTemplate sqlSession;
 	
+	// 게시판 메뉴 목록 불러오기
+	public List<Map<String, Object>> getBoardMenuList(Map<String, Object> param) throws Exception {
+		return sqlSession.selectList("board.getBoardMenuList", param);
+	}
+	
+	// 내가 쓴 글 목록 불러오기
+	public List<Map<String, Object>> getMyContentList(Map<String, Object> param) throws Exception {
+		return sqlSession.selectList("board.getMyContentList", param);
+	}
+	
 	// 게시판 목록 불러오기
-	public List<Map<String, Object>> getBoardList(Map<String, Object> param) throws Exception {
-		return sqlSession.selectList("board.getBoardList", param);
+	public List<Map<String, Object>> getBoardContentList(Map<String, Object> param) throws Exception {
+		return sqlSession.selectList("board.getBoardContentList", param);
 	}
 	
 	// 게시판 선택된 글 조회 수 증가
@@ -56,7 +66,7 @@ public class BoardService {
 	
 	// 게시판 글 삭제하기
 	public String delBoardContent(Map<String, Object> param) throws Exception {
-		sqlSession.delete("board.delBoardContent", param);
+		sqlSession.update("board.delBoardContent", param);
 		
 		return "success";
 	}
@@ -68,6 +78,6 @@ public class BoardService {
 	
 	// 게시판 댓글 삭제하기
 	public void delBoardComment(Map<String, Object> param) throws Exception {
-		sqlSession.delete("board.delBoardComment", param);
+		sqlSession.update("board.delBoardComment", param);
 	}
 }

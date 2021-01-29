@@ -1,10 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?> 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
 <mapper namespace="board"> 
+	<!-- 게시판 메뉴 목록 불러오기 -->
+	<select id="getBoardMenuList" parameterType="Map" resultType="Map">
+		SELECT *
+		  FROM BRD_MENU
+	</select>
+	
+	<!-- 내가 쓴 글 목록 불러오기 -->
+	<select id="getMyContentList" parameterType="Map" resultType="Map">
+		 SELECT b.BRD_ID, b.BRD_TITLE, b.BRD_CONTENT, b.BRD_WRITER, b.BRD_DATE, b.BRD_HIT, bm.MENU_VAL
+		  FROM brd b, brd_menu bm
+		 WHERE BRD_DIS = "Y"
+		   AND BRD_WRITER = #{loginUser}
+		   AND b.BRD_MENU = bm.MENU_CDE
+		 ORDER BY BRD_DATE DESC
+	</select>
+	
 	<!-- 게시판 목록 불러오기 -->
-	<select id="getBoardList" parameterType="Map" resultType="Map">
+	<select id="getBoardContentList" parameterType="Map" resultType="Map">
 		SELECT BRD_ID, BRD_TITLE, BRD_WRITER, BRD_DATE, BRD_HIT
 		  FROM BRD
+		 WHERE BRD_DIS = "Y" AND BRD_MENU = #{selectedMenuId}
 		 ORDER BY BRD_DATE DESC
 	</select>
 	
@@ -17,23 +34,24 @@
 	
 	<!-- 게시판 글 내용 불러오기 -->
 	<select id="getBoardContent" parameterType="Map" resultType="Map">
-		SELECT *
-		  FROM BRD
+		 SELECT b.*, bm.MENU_VAL
+		  FROM brd b, brd_menu bm
 		 WHERE BRD_ID = #{selectedId}
+		   AND b.BRD_MENU = bm.MENU_CDE
 	</select>
 	
-	<!-- 게시판 글 내용 불러오기 -->
+	<!-- 게시판 글 댓글 불러오기 -->
 	<select id="getBoardContComment" parameterType="Map" resultType="Map">
 		SELECT *
 		  FROM BRD_COMMENT
-		 WHERE BRD_ID = #{selectedId}
+		 WHERE BRD_ID = #{selectedId} AND COM_DIS = "Y"
 	</select>
 	
 	<!-- 게시판 글 작성하기 -->
 	<insert id="setBoardContent">		
 		INSERT 
-		  INTO BRD (BRD_TITLE, BRD_CONTENT, BRD_WRITER, BRD_DATE) 
-	 	VALUES (#{title}, #{content}, #{usrId}, #{date})
+		  INTO BRD (BRD_TITLE, BRD_CONTENT, BRD_WRITER, BRD_DATE, BRD_MENU) 
+	 	VALUES (#{title}, #{content}, #{usrId}, #{date}, #{selectedMenuId})
 	</insert>
 	
 	<!-- 게시판 글 수정하기 -->
@@ -44,11 +62,11 @@
 	</update>
 	
 	<!-- 게시판 글 삭제하기 -->
-	<delete id="delBoardContent">
-		DELETE
-		  FROM BRD
+	<update id="delBoardContent">
+		UPDATE BRD
+		   SET BRD_DIS = "N"
 		 WHERE BRD_ID = #{id}
-	</delete>
+	</update>
 
 	<!-- 게시판 댓글 작성하기 -->
 	<insert id="writeBoardComment">
@@ -58,9 +76,9 @@
 	</insert>
 	
 	<!-- 게시판 댓글 삭제하기 -->
-	<delete id="delBoardComment">
-		DELETE
-		  FROM BRD_COMMENT
+	<update id="delBoardComment">
+		UPDATE BRD_COMMENT
+		   SET COM_DIS = "N"
 		 WHERE COM_ID = #{id}
-	</delete>
+	</update>
 </mapper>

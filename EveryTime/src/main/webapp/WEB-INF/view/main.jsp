@@ -27,20 +27,21 @@
 			<div id="boardMenuList"></div>
 			<!-- 게시판 글 목록 -->
 			<div id="boardContentList" style="display: none;">
-			<table border='1'>
-				<thead id="boardThead">
-					<tr>
-						<td>순서</td>
-						<td>제목</td>
-						<td>작성자</td>
-						<td>작성일</td>
-						<td>조회수</td>
-					</tr>
-				</thead>
-				<tbody id="boardTbody">
-				</tbody>
-			</table>
-			<button id="boardWriteBtn">글 작성</button>
+				<div id="boardContentMenu"></div>
+				<table border='1'>
+					<thead id="boardThead">
+						<tr>
+							<td>순서</td>
+							<td>제목</td>
+							<td>작성자</td>
+							<td>작성일</td>
+							<td>조회수</td>
+						</tr>
+					</thead>
+					<tbody id="boardTbody">
+					</tbody>
+				</table>
+				<button id="boardWriteBtn">글 작성</button>
 			</div>
 			
 			<!-- 게시판 글 내용 -->

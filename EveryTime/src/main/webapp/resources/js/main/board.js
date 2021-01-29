@@ -33,7 +33,6 @@ function boardInit() {
 	selectedId = "";
 	
 	getBoardMenuList();
-	//getBoardContentList();
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -236,7 +235,11 @@ function drawBoardContentList() {
 	$("#boardContentList").css("display", "inline-block");
 	
 	var boardContentListHtml = "";
+	var boardContentMenuHtml = "";
 	var boardContentListSize = boardContentList.length;
+	
+	boardContentMenuHtml = "<h3>" + selectedMenuVal + "</h3>";
+	$("#boardContentMenu").empty().append(boardContentMenuHtml);
 	
 	for(var i = 0; i < boardContentListSize; i++) {
 		boardContentListHtml += "<tr>";
@@ -319,6 +322,7 @@ function drawModBoard() {
 function initBrdMenuListEvent() {
 	$(".brdMenuList").off("click").on("click", function(){
 		selectedMenuId = this.id;
+		selectedMenuVal = this.innerText;
 		
 		if(selectedMenuId.substr(-3) === "BRD") {
 			getBoardContentList();	

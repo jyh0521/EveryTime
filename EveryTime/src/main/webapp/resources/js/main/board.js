@@ -55,6 +55,7 @@ function getMyContentList() {
 	 
 	requestData("getMyContentList.do", param).done(function(result){
 		boardContentList = result;
+		totalData = result.length;
 		
 		drawBoardContentList();
 	});
@@ -71,6 +72,7 @@ function getBoardContentList() {
 	 
 	requestData("getBoardContentList.do", param).done(function(result){
 		boardContentList = result;
+		totalData = result.length;
 		
 		drawBoardContentList();
 	});
@@ -241,6 +243,7 @@ function drawBoardContentList() {
 	boardContentMenuHtml = "<h3>" + selectedMenuVal + "</h3>";
 	$("#boardContentMenu").empty().append(boardContentMenuHtml);
 	
+	//for(var i = nowPage; i < nowPage + dataPerPage; i++) {
 	for(var i = 0; i < boardContentListSize; i++) {
 		boardContentListHtml += "<tr>";
 		boardContentListHtml += 	"<td>" + (i + 1) + "</td>";
@@ -252,6 +255,8 @@ function drawBoardContentList() {
 	}
 	
 	$("#boardTbody").empty().append(boardContentListHtml);
+	
+	//paging(totalData, dataPerPage, pageCount, 1);
 	
 	initBrdListEvent();
 }

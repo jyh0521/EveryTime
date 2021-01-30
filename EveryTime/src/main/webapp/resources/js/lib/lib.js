@@ -1,3 +1,16 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////// 변수 //////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// 페이징 변수
+var totalData;
+var dataPerPage = 10;
+var pageCount = 10;
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////// 함수 //////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 // 데이터 요청
 function requestData(url, param) {
 	var deferred = $.Deferred();
@@ -61,4 +74,56 @@ function getCookie(name) {
 
 function deleteCookie(name) {
 	document.cookie = name + '=; expires=Thu, 01 Jan 1999 00:00:10 GMT;';
+}
+
+// 페이징 함수
+function paging(totalData, dataPerPage, pageCount, currentPage) {
+	var totalPage = Math.ceil(totalData / dataPerPage);
+	var pageGroup = Math.ceil(currentPage / pageCount);
+	
+	var last = pageGroup * pageCount;
+	
+	if(last > totalPage) {
+		last = totalPage;
+	}
+	
+	var first = last - (pageCount - 1);
+	var next = last + 1;
+	var prev = first - 1;
+	
+	var $pagingView = $("#paging");
+	var pagingHtml = "";
+	
+	if(prev > 0) {
+		pagingHtml += "<a href='#' id='prev'><</a>";
+	}
+	
+	for(var i = first; i <= last; i++) {
+		pagingHtml += "<a href='#' id="+ i + ">" + i + "</a>";
+	}
+	
+	if(last < totalPage) {
+		pagingHtml += "<a href='#'>></a>";
+	}
+	
+	$("#paging").html(pagingHtml);
+	$("#paging a").css("color", "black");
+	/*$("#paginf a#" + currentPage).css({ "text-decoration":"none",
+									    "color":"red",
+									    "font-weight":"bold" });*/
+	
+	$("#paging a").click(function(){
+		var $item = $(this);
+		var $id = $item.attr("id");
+		var selectedPage = $item.text();
+		
+		if($id === "next") {
+			selectedPage = next;
+		}
+		else if($id === "prev") {
+			selectedPage = prev;
+		}
+		
+		paging(totalData, dataPerPage, pageCount, selectedPage);		
+	});
 }

@@ -28,20 +28,25 @@
 			<!-- 게시판 글 목록 -->
 			<div id="boardContentList" style="display: none;">
 				<div id="boardContentMenu"></div>
-				<table border='1'>
-					<thead id="boardThead">
-						<tr>
-							<td>순서</td>
-							<td>제목</td>
-							<td>작성자</td>
-							<td>작성일</td>
-							<td>조회수</td>
-						</tr>
-					</thead>
-					<tbody id="boardTbody">
-					</tbody>
-				</table>
-				<button id="boardWriteBtn">글 작성</button>
+				<div>
+					<table border='1'>
+						<thead id="boardThead">
+							<tr>
+								<td>순서</td>
+								<td>제목</td>
+								<td>작성자</td>
+								<td>작성일</td>
+								<td>조회수</td>
+							</tr>
+						</thead>
+						<tbody id="boardTbody">
+						</tbody>
+					</table>
+				</div>
+				<div id="paging"></div>
+				<div style="margin-top: 5%;">
+					<button id="boardWriteBtn">글 작성</button>
+				</div>
 			</div>
 			
 			<!-- 게시판 글 내용 -->
@@ -53,14 +58,19 @@
 			<!-- 게시판 글 작성 -->
 			<div id="boardWrite" style="display: none;">
 				<form id="boardWriteForm">
-					<label for="boardTitle">제목</label>
-					<input type="text" name="boardTitle" id="boardTitle" />
-					
-					<label for="boardContent">내용</label>
-					<textarea name="boardContent" id="boardContent" cols="40" rows="8"></textarea>
+					<div style="margin-top: 1%;">
+						<label for="boardTitle">제목</label>
+						<input type="text" name="boardTitle" id="boardTitle" />
+					</div>
+					<div style="margin-top: 1%;">
+						<label for="boardContent" style="top: -108px; position: relative;">내용</label>
+						<textarea name="boardContent" id="boardContent" cols="40" rows="8"></textarea>
+					</div>
 				</form>
-				<button id="writeBtn">작성하기</button>
-				<button id="backBtn">뒤로</button>
+				<div style="margin-top: 1%;">
+					<button id="writeBtn">작성하기</button>
+					<button id="backBtn">뒤로</button>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -68,6 +78,7 @@
 </body>
 <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 <script type="text/javascript" src="resources/js/lib/lib.js"></script>
 <script type="text/javascript" src="resources/js/main/main.js"></script>
 <script type="text/javascript" src="resources/js/main/board.js"></script>

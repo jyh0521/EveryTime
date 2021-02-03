@@ -28,6 +28,11 @@ public class BoardService {
 		return sqlSession.selectList("board.getMyContentList", param);
 	}
 	
+	// 내가 쓴 글 목록 불러오기
+	public List<Map<String, Object>> getMyCommentList(Map<String, Object> param) throws Exception {
+		return sqlSession.selectList("board.getMyCommentList", param);
+	}
+	
 	// 게시판 목록 불러오기
 	public List<Map<String, Object>> getBoardContentList(Map<String, Object> param) throws Exception {
 		return sqlSession.selectList("board.getBoardContentList", param);

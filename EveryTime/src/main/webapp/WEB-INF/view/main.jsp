@@ -48,6 +48,8 @@
 					<button id="boardWriteBtn">글 작성</button>
 				</div>
 			</div>
+			<!-- 내가 쓴 댓글 목록 -->
+			<div id="myCommentList" style="display: none;"></div>
 			
 			<!-- 게시판 글 내용 -->
 			<div id="boardContent" style="display: none;">

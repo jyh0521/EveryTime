@@ -7,6 +7,8 @@ var boardContentList = {};
 var boardContent = {};
 var boardContComment = {};
 
+var myCommentList = {};
+
 var selectedMenuId = "";
 var selectedMenuVal = "";
 var selectedId = "";
@@ -26,6 +28,7 @@ function boardInit() {
 	$("#boardMenuList").css("display", "block");
 	$("#boardContent").css("display", "none");
 	$("#boardWrite").css("display", "none");
+	$("#myCommentList").css("display", "none");
 	
 	$("#boardTitle").val("");
 	$("textarea#boardContent").val("");
@@ -55,7 +58,7 @@ function getMyContentList() {
 	 
 	requestData("getMyContentList.do", param).done(function(result){
 		boardContentList = result;
-		totalData = result.length;
+		//totalData = result.length;
 		
 		drawBoardContentList();
 	});
@@ -63,7 +66,13 @@ function getMyContentList() {
 
 // 내가 쓴 댓글 목록 불러오기
 function getMyCommentList() {
+	var param = "loginUser=" + loginUser;
 	
+	requestData("getMyCommentList.do", param).done(function(result){
+		myCommentList = result;
+		
+		drawMyCommentList();
+	});
 }
 
 // 게시판 목록 불러오기
@@ -72,7 +81,7 @@ function getBoardContentList() {
 	 
 	requestData("getBoardContentList.do", param).done(function(result){
 		boardContentList = result;
-		totalData = result.length;
+		//totalData = result.length;
 		
 		drawBoardContentList();
 	});
@@ -259,6 +268,36 @@ function drawBoardContentList() {
 	//paging(totalData, dataPerPage, pageCount, 1);
 	
 	initBrdListEvent();
+}
+
+// 게시판 내가 쓴 댓글 그리기
+function drawMyCommentList() {
+	$("#boardMenuList").css("display", "none");
+	
+	var myCommentListHtml = "";
+	var myCommentListSize = myCommentList.length;
+	
+	myCommentListHtml += "<table border='1'>";
+	myCommentListHtml += 	"<thead>";
+	myCommentListHtml += 		"<tr>";
+	myCommentListHtml += 			"<td>내용</td>";
+	myCommentListHtml += 			"<td>날짜</td>";
+	myCommentListHtml += 		"</tr>";
+	myCommentListHtml += 	"</thead>";
+	myCommentListHtml += 	"<tbody>";
+	
+	for(var i = 0; i < myCommentListSize; i++) {
+		myCommentListHtml += 		"<tr>";
+		myCommentListHtml +=			"<td>" + myCommentList[i]["COM_CONTENT"] + "</td>";
+		myCommentListHtml +=			"<td>" + getTimeStamp(myCommentList[i]["COM_DATE"])+ "</td>";
+		myCommentListHtml += 		"</tr>";	
+	}
+	
+	myCommentListHtml += 	"</tbody>";
+	myCommentListHtml += "</table>";
+	
+	$("#myCommentList").empty().append(myCommentListHtml);
+	$("#myCommentList").css("display", "block");
 }
 
 // 게시판 내용 그리기

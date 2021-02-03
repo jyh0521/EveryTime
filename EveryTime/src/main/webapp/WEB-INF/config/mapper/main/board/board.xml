@@ -17,6 +17,14 @@
 		 ORDER BY BRD_DATE DESC
 	</select>
 	
+	<!-- 내가 쓴 댓글 목록 불러오기 -->
+	<select id="getMyCommentList" parameterType="Map" resultType="Map">
+		 SELECT *
+		  FROM BRD_COMMENT
+		 WHERE COM_DIS = "Y" AND COM_WRITER = #{loginUser}
+		 ORDER BY COM_DATE DESC;
+	</select>
+	
 	<!-- 게시판 목록 불러오기 -->
 	<select id="getBoardContentList" parameterType="Map" resultType="Map">
 		SELECT BRD_ID, BRD_TITLE, BRD_WRITER, BRD_DATE, BRD_HIT

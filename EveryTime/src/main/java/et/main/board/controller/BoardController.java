@@ -37,6 +37,13 @@ public class BoardController {
 		return boardService.getMyContentList(param);
 	}
 	
+	// 내가 쓴 댓글 목록 불러오기
+	@RequestMapping(value="/getMyCommentList.do")
+	@ResponseBody
+	public List<Map<String, Object>> getMyCommentList(@RequestParam Map<String, Object> param, HttpSession session) throws Exception {		
+		return boardService.getMyCommentList(param);
+	}
+	
 	// 게시판 목록 불러오기
 	@RequestMapping(value="/getBoardContentList.do")
 	@ResponseBody
